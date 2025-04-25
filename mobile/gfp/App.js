@@ -1,7 +1,7 @@
 import Login from '../gfp/src/pages/Login.js'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import MenuDrawer from "./src/pages/MenuDrawer.js"
+import MenuDrawer from "./src/components/MenuDrawer.js"
 
 const Stack = createNativeStackNavigator();
 

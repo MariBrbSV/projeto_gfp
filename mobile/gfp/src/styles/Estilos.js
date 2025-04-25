@@ -40,7 +40,7 @@ const Estilos = {
         textAlign: 'center',
         alignContent: 'center',
         fontFamily: 'Arial'
-    }
+    },
 }
 
 export default Estilos;
