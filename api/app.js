@@ -3,6 +3,8 @@ import { testarConexao } from './db.js'
 import cors from 'cors'
 import rotasUsuarios, { autenticarToken } from './routes/rotasUsuarios.js';
 import rotasCategorias from './routes/rotasCategorias.js';
+import rotasContas from './routes/rotasContas.js';
+import rotasTransacoes from './routes/rotasTransacoes.js'
 
 const app = express()
 testarConexao();
@@ -15,22 +17,23 @@ app.get('/',(req, res) =>{
 })
 
 //Rotas usuarios
-app.post('/usuarios', rotasUsuarios.novoUsuario)
-app.post('/usuarios/login', rotasUsuarios.Login)
-app.get('/usuarios', rotasUsuarios.listarUsuarios)
-app.get('/usuarios', autenticarToken, rotasUsuarios.listarUsuarios)
+app.post('/usuarios', rotasUsuarios.novoUsuario) // ✅
+app.post('/usuarios/login', rotasUsuarios.Login) // ✅
+app.get('/usuarios', rotasUsuarios.listarUsuarios) // ✅
+// app.get('/usuarios', autenticarToken, rotasUsuarios.listarUsuarios) 
 // app.get('/usuarios/:id_usuario', rotasUsuarios.listarUsuariosPorID)
-app.patch('/usuarios/:id_usuario', rotasUsuarios.Atualizar)
+app.patch('/usuarios/:id_usuario', rotasUsuarios.Atualizar) // ✅
 // app.put('/usuarios/:id_usuario', rotasUsuarios.atualizarTodos)
-app.delete('/usuarios/:id_usuario', rotasUsuarios.deletar)
+app.delete('/usuarios/:id_usuario', rotasUsuarios.deletar) // ✅
 
 // //rotas categorias
-app.post('/categorias', rotasCategorias.nova);
-// app.get('/categorias', rotasCategorias.listar)
-// app.get('/categorias/:id_categoria', rotasCategorigas.listarPorID)
-// app.patch('/categorias/:id_categoria', rotasCategorias.atualizar)
-// app.put('/categorias/:id_categoria', rotasCategorias.atualizarTodos)
-// app.delete('/categorias/:id_categoria', rotasCategorias.deletar)
+app.post('/categorias', rotasCategorias.nova); // ✅
+app.get('/categorias/filtrarCategoria', rotasCategorias.filtrarCategoria); // ✅
+app.get('/categorias', rotasCategorias.listar) // ✅
+// app.get('/categorias/:id_categoria', rotasCategorias.listarCategoriasPorID) // ----
+app.patch('/categorias/:id_categoria', rotasCategorias.atualizarCategoria) // ✅
+app.put('/categorias/:id_categoria', rotasCategorias.atualizarTodosCategoria) // ✅
+app.delete('/categorias/:id_categoria', rotasCategorias.deletarCategoria) // ✅
 
 // //Rotas sub-categorias
 // app.post('/subCategorias', rotasSubCategorias.nova)
@@ -40,16 +43,21 @@ app.post('/categorias', rotasCategorias.nova);
 // app.put('/subCategorias/:id_subCategoria', rotasSubCategorias.atualizarTodos)
 // app.delete('/subCategorias/:id_subCategoria', rotasSubCategorias.deletar)
 
-// //Rotas local Transacao
-// app.post('/localTransacao', rotaslocalTransacoes.nova)
-// app.get('/localTransacao', rotaslocalTransacoes.listar)
-// app.get('/localTransacao/:id_localTransacao', rotaslocalTransacoes.listarPorID)
-// app.patch('/localTransacao/:id_localTransacao', rotaslocalTransacoes.atualizar)
-// app.put('/localTransacao/:id_localTransacao', rotaslocalTransacoes.atualizarTodos)
-// app.delete('/localTransacao/:id_localTransacao', rotaslocalTransacoes.deletar)
+//Rotas Contas
+app.post('/contas', rotasContas.nova) // ✅
+app.get('/contas', rotasContas.listar) // ✅
+// app.get('/contas/:id_conta', rotasContas.listarPorID)
+app.patch('/contas/:id_conta', rotasContas.atualizar) // ✅
+app.put('/contas/:id_conta', rotasContas.atualizarTodos) // ✅
+// app.delete('/contas/:id_conta', rotasContas.deletar)
+app.get('/contas/filtrarConta', rotasContas.filtrarConta); // ✅
+
 
 // //Rotas Transacoes
-// app.post('/transacao', rotasTransacoes.nova)
+app.get('/transacao/filtroData', rotasTransacoes.filtrarPorData) // ✅
+app.post('/transacao', rotasTransacoes.nova) // ✅
+app.get('/transacao/somarTransacoes', rotasTransacoes.somarTransacoes); // ✅
+app.get('/transacao/transacoesVencidas/:id_usuario', rotasTransacoes.transacoesVencidas) // ✅
 // app.get('/transacao', rotasTransacoes.listar)
 // app.get('/transacao/:id_transacao', rotasTransacoes.listarPorID)
 // app.patch('/transacao/:id_transacao', rotasTransacoes.atualizar)

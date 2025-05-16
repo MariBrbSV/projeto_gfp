@@ -1,155 +1,211 @@
-import React, { useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from "react-native";
-import * as Animar from 'react-native-animatable';
-import { enderecoServidor } from '../utils';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StatusBar,
+    Image,
+    Switch
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import Fontisto from '@expo/vector-icons/Fontisto';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { enderecoServidor } from '../utils';
+import Estilos_Login from '../styles/Estilos_Login';
+import Estilos, { corPrincipal, corSecundaria, corFundo, corFundo2, corTextos, corTextos2 } from '../styles/Estilos';
+
+
 
 const Login = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [senha, setSenha] = useState('');
+    const [email, setEmail] = useState('douglas.camata@gmail.com');
+    const [senha, setSenha] = useState('123');
+    const [showPassword, setShowPassword] = useState(false);
+    const [isActive, setIsActive] = useState(false);
+    const [lembrar, setLembrar] = useState(false);
 
-    async function botaoEntrar() {
+    useEffect (() => {
+        const buscarUsuarioLogado = async () => {
+            const usuarioLogado = await AsyncStorage.getItem('UsuarioLogado');
+            if (usuarioLogado){
+                const usuario = JSON.parse(usuarioLogado);
+                if (usuario.lembrar == true){
+                    navigation.navigate('MenuDrawer')
+                }
+            }
+        }
+    }, [])
+
+
+    const botaoLogin = async () => {
+
         try {
-            if (email === '' || senha === '') {
+            if (email == '' || senha == '') {
                 throw new Error('Preencha todos os campos');
             }
+            //autenticando utilizando a API de backend com o fetch e recebendo o token
             const resposta = await fetch(`${enderecoServidor}/usuarios/login`, {
                 method: 'POST',
-                headers: { 'Content-type': 'application/json' },
-                body: JSON.stringify({ email, senha }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    senha: senha,
+                }),
             });
+            
+            const dados = await resposta.json();
+
             if (resposta.ok) {
-                const dados = await resposta.json();
-                AsyncStorage.setItem('UsuarioLogado', JSON.stringify(dados));
-                navigation.navigate('MenuDrawer');
+                console.log('Login bem-sucedido:', dados);
+                // Aqui você pode armazenar o token em um estado global ou AsyncStorage, se necessário
+                AsyncStorage.setItem('UsuarioLogado', JSON.stringify({...dados, lembrar}));
+                navigation.navigate('MenuDrawer')
+
             } else {
-                throw new Error('Login ou senha incorretos ❌');
+                throw new Error(dados.message || 'Erro ao fazer login');
             }
+
         } catch (error) {
+            console.error('Erro ao realizar login:', error);
             alert(error.message);
+            return;
         }
-    }
+    };
 
-    return ( 
-         <View style={styles.container} >
+    return (
+        <View style={Estilos_Login.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#2c3e50" />
+            <LinearGradient
+                colors={[ '#da9d85']}
+                style={Estilos_Login.gradientBackground}
+            >
 
-            <LinearGradient 
-            colors={['#060073', '#0560F2']}
-            style={styles.gradientBackground}
-            > 
-
-            <View> 
-                <Image source={require('../assets/logo.png')} style={styles.logo}
-                                        resizeMode="contain"/>
-            </View>
-            <Animar.View animation="fadeInUp" style={styles.formContainer}>
-                <Text style={styles.title}> Seja Bem Vindo(a)! </Text>
-                <View style={styles.inputAndIcon}> 
-                <Fontisto name="email" size={24} color="black" />
-                <TextInput
-                    placeholder="Digite seu e-mail"
-                    style={styles.input}
-                    placeholderTextColor="#aaa"
-                    onChangeText={setEmail}
-                    value={email}
-                />
+                {/* Cabeçalho */}
+                <View style={Estilos_Login.header} >
+                    <View style={Estilos_Login.logoContainer}>
+                        <Image source={require('../assets/logo.png')} style={{ width: 100, height: 100 }} />
+                        <View style={Estilos_Login.headerSubTitle}>
+                            <Text style={Estilos_Login.logoText}>GFP</Text>
+                            <Text style={Estilos_Login.headerSubTitle}>Gestor Financeiro Pessoal</Text>
+                        </View>
+                    </View>
                 </View>
-                <View style={styles.inputAndIcon}> 
-                <AntDesign name="unlock" size={24} color="black" />
-                <TextInput
-                    placeholder="Digite sua senha"
-                    style={styles.input}
-                    placeholderTextColor="#aaa"
-                    onChangeText={setSenha}
-                    value={senha}
-                />
+
+                {/* Card de login */}
+                <View style={Estilos_Login.loginCard} >
+                    <Text style={Estilos_Login.loginTitle}>Acesse sua conta</Text>
+
+                    {/* Formulário */}
+                    <View style={Estilos.inputContainer}>
+                        <Ionicons
+                            name="mail-outline"
+                            size={20}
+                            color={isActive === 'email' ? corPrincipal : corTextos2}
+                            style={Estilos.inputIcon}
+                        />
+                        <TextInput
+                            style={[
+                                Estilos.input,
+                                isActive === 'email' && Estilos.inputActive,
+                            ]}
+                            placeholder="Email"
+                            placeholderTextColor={corTextos2}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            value={email}
+                            onChangeText={setEmail}
+                            onFocus={() => setIsActive('email')}
+                            onBlur={() => setIsActive(false)}
+                        />
+                    </View>
+
+                    <View style={Estilos.inputContainer}>
+                        <Ionicons
+                            name="lock-closed-outline"
+                            size={20}
+                            color={isActive === 'password' ? corPrincipal : corTextos2}
+                            style={Estilos.inputIcon}
+                        />
+                        <TextInput
+                            style={[
+                                Estilos.input,
+                                isActive === 'password' && Estilos.inputActive
+                            ]}
+                            placeholder="Senha"
+                            placeholderTextColor={corTextos2}
+                            secureTextEntry={!showPassword}
+                            value={senha}
+                            onChangeText={setSenha}
+                            onFocus={() => setIsActive('password')}
+                            onBlur={() => setIsActive(false)}
+                        />
+                        <TouchableOpacity
+                            style={Estilos.eyeIcon}
+                            onPress={() => setShowPassword(!showPassword)}
+                        >
+                            <Ionicons
+                                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                size={20}
+                                color={corTextos2}
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={Estilos_Login.forgotPasswordContainer}>
+                        
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}> 
+                                <Switch
+                                    value={lembrar} 
+                                    onValueChange={setLembrar}/>
+
+                                <Text> Lembrar-me </Text>
+                            </View>
+                        <TouchableOpacity>
+                            <Text style={Estilos_Login.forgotPasswordText}>Esqueceu a senha?</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity
+                        style={Estilos.botao}
+                        activeOpacity={0.8}
+                        onPress={botaoLogin}
+                    >
+                        <LinearGradient
+                            colors={['#ac0003']}
+                            style={Estilos.degradeBotao}
+                        >
+                            <Text style={Estilos.botaoTexto}>Entrar</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+
+                    <View style={Estilos_Login.signUpContainer}>
+                        <Text style={Estilos_Login.signUpText}>Não tem uma conta? </Text>
+                        <TouchableOpacity>
+                            <Text style={Estilos_Login.signUpLink}>Cadastre-se</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
-                <TouchableOpacity style={styles.button} onPress={botaoEntrar}>
-                    <Text style={styles.buttonText}>Entrar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.button, styles.secondaryButton]}
-                    onPress={() => navigation.navigate('Cadastro')}
-                >
-                    <Text style={[styles.buttonText, styles.secondaryButtonText]}>Cadastro</Text>
-                </TouchableOpacity>
-            </Animar.View>
+
+                {/* Features */}
+                <View
+                    style={Estilos_Login.featuresContainer}>
+                    <View style={Estilos_Login.featureItem}>
+                        <Ionicons name="stats-chart-outline" size={20} color={'#ac0003'} />
+                        <Text style={Estilos_Login.featureText}>Acompanhe seus gastos com gráficos</Text>
+                    </View>
+                    <View style={Estilos_Login.featureItem}>
+                        <Ionicons name="notifications-outline" size={20} color={'#ac0003'} />
+                        <Text style={Estilos_Login.featureText}>Receba alertas financeiros importantes</Text>
+                    </View>
+
+                </View>
             </LinearGradient>
         </View>
     );
 };
 
-export default Login;
 
-const styles = StyleSheet.create({
-    gradientBackground: {
-        flex: 1,
-        paddingHorizontal: 20,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    formContainer: {
-        width: '90%',
-        backgroundColor: '#fff',
-        borderRadius: 20,
-        padding: 20,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#344b9b',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    inputAndIcon: {
-        borderWidth: 1,
-        borderColor: '#344b9b',
-        borderRadius: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 5,
-        height: 50,
-        marginBottom: 15,
-    },
-    input: {
-        flex: 1,
-        fontSize: 16,
-        color: '#344b9b',
-        marginLeft: 10,
-    },
-    button: {
-        backgroundColor: '#344b9b',
-        borderRadius: 10,
-        paddingVertical: 10,
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    secondaryButton: {
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#344b9b',
-    },
-    secondaryButtonText: {
-        color: '#344b9b',
-    },
-    logo: {
-        width: 300,
-        height: 300,
-    },
-});
+export default Login;

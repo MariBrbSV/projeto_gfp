@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Estilos from "../styles/Estilos";
+import Estilos from "../styles/Estilos.css";
 import { enderecoServidor } from "../utils";
 import Principal from "./Principal";
+
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [lembrar, setLembrar] = useState(false);
 
   async function botaoEntrar(e) {
     e.preventDefault();
@@ -27,7 +29,7 @@ export default function Login() {
       if (resposta.ok) {
         const dados = await resposta.json();
         setMensagem('Login bem-sucedido! ✅');
-        localStorage.setItem('UsuarioLogado', JSON.stringify(dados));
+        localStorage.setItem('UsuarioLogado', JSON.stringify(...dados, lembrar));
         // Redirecionar após login, se quiser:
         navigate("/principal");
       } else {
@@ -37,6 +39,7 @@ export default function Login() {
     } catch (error) {
       console.error('Erro ao realizar login: ', error);
       alert(error.message);
+      return;
     }
   }
 
@@ -47,16 +50,19 @@ export default function Login() {
   }
 
   return (
-    <div style={Estilos.conteudo}>
-        <div style={{backgroundColor: '#344b9b', width: '30%', height: '900px', margin: 0 }}> 
-        </div>
+    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}> 
       <div style={Estilos.loginBox}>
+        <div style={{flexDirection: 'row', display: 'flex'}}> 
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXT5mTm68NXB258gwdNWMu9qSuFReLMeWeow&s"
+          src="https://sesisenaispedu-my.sharepoint.com/personal/mariana_borba_portalsesisp_org_br/Documents/aCurso%20DEV/3%c2%ba%20Semestre/Projetos/GFP/frontend/gfp/src/assets/logo.png?Web=1"
           alt="Logo SENAI"
           style={Estilos.logo}
         />
-        <h2 style={Estilos.h2}>Login</h2>
+        <div style={{marginTop: '5%'}}> 
+        <h2> GFP </h2>
+        <h5 style={{marginTop: -15}}> Gestor Financeiro Pessoal </h5>
+        </div>
+            </div>
 
         <div>
           <div style={Estilos.inputGroup}>
@@ -69,6 +75,7 @@ export default function Login() {
               required
               style={Estilos.inputGroupInput}
             />
+            
           </div>
 
           <div style={Estilos.inputGroup}>
@@ -83,14 +90,32 @@ export default function Login() {
             />
           </div>
 
+
+              <div className={StyleSheet.between}>
+                <div className={{display:'flex', alignItens:'center'}}>
+                    <input type="checkbox" style={{marginRight:'5px'}} checked={lembrar} onChange={(e) => setLembrar(e.target.checked)}/>
+                    <label>Lembrar-me</label>
+
+                </div>
+            </div>
+                
+              <a href="#" style={{color: '#000000',
+                          fontSize: 14,
+                          textAlign: 'right'}}>Esqueceu a senha?</a>
+                
+            </div>
+
+            
+
+
           <div style={Estilos.botoes}>
             <button onClick={botaoEntrar} style={Estilos.loginButton}>Entrar</button>
-            <button onClick={botaoLimpar} style={Estilos.loginButton}>Limpar</button>
+            <button onClick={botaoLimpar} style={Estilos.cleanButton}>Limpar</button>
           </div>
         </div>
 
         <p>{mensagem}</p>
       </div>
-    </div>
+      
   );
 }
