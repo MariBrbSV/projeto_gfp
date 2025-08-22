@@ -17,8 +17,8 @@ class rotasContas{
     }
     static async listar(req,res) {
         try {
-            const resultado = await BD.query (`SELECT * from contas`);
-            res.json({transacoes: resultado.rows});
+            const resultado = await BD.query (`SELECT * from contas where ativo = true order by nome`);
+            res.json(resultado.rows);
         } catch (error) {
             res.status(500).json({ mensagem: 'Erro ao buscar transação', erro: error.message});
         }
@@ -102,10 +102,8 @@ class rotasContas{
         const { id_conta } = req.params
 
         try {
-            const conta = await BD.query('UPDATE conta SET ativo = false where id_conta = $1',
-                [id_conta]
-            )
-            res.status(200).json(conta.rows[0])
+            await BD.query('UPDATE contas SET ativo = false where id_conta = $1', [id_conta])
+            res.status(200).json({ message: 'Conta desativada com sucesso' })
         } catch (error) {
             res.status(500).json({ message: "Erro ao consultar conta", error: error.message })
         }
@@ -122,7 +120,7 @@ class rotasContas{
             ORDER BY nome DESC 
             `
 
-            const valores = [`%${nome}$%`]
+            const valores = [`%${nome}4$%`]
 
             const resposta = await BD.query(query,valores)
 

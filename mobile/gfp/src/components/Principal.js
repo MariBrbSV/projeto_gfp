@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Estilos, { corFundo } from '../styles/Estilos';
 import React, { useState, useEffect } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function Principal({ navigation }) {
     const [usuario, setUsuario] = useState();
@@ -23,6 +24,14 @@ export default function Principal({ navigation }) {
     const botaoLogout = () => {
         AsyncStorage.removeItem('UsuarioLogado');
         navigation.navigate('Login')
+    }
+
+    const botaoContas = () => {
+        navigation.navigate('Contas')
+    }
+
+    const botaoCategorias = () => {
+        navigation.navigate('Categorias')
     }
 
     return (
@@ -50,7 +59,32 @@ export default function Principal({ navigation }) {
                     </TouchableOpacity>
                 </View>
             </View>
-            
+
+            <View style={{alignItems: 'center', flexDirection: 'row', gap: 5, justifyContent: 'center'}}> 
+
+            {/* Contas */}
+            <View style={{alignItems: 'center', marginTop: 20, fontFamily: 'Arial', gap: 5}}> 
+               
+                    <View style={{backgroundColor: 'rgba(0, 0, 0, 0.44)', width: 100, height: 80, borderRadius: 20, alignItems: 'center', justifyContent: 'center'}}> 
+                    <TouchableOpacity onPress={botaoContas} style={{color: 'white'}}> 
+                        <FontAwesome5 name="money-check-alt" size={24} color="white" /> 
+                        Contas 
+                    </TouchableOpacity>
+                     </View>
+            </View>
+
+            {/* Categorias */}
+            <View style={{alignItems: 'center', marginTop: 20, fontFamily: 'Arial', gap: 5}}> 
+               
+                    <View style={{backgroundColor: 'rgba(0, 0, 0, 0.44)', width: 100, height: 80, borderRadius: 20, alignItems: 'center', justifyContent: 'center'}}> 
+                    <TouchableOpacity onPress={botaoCategorias} style={{color: 'white'}}> 
+                        <MaterialIcons name="category" size={24} color="white" />
+                        Categorias
+                    </TouchableOpacity>
+                     </View>
+            </View>
+
+            </View>
         </View>
     )
 }

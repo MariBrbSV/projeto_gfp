@@ -1,15 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Principal from "./pages/Principal";
 import Login from "./pages/Login";
+import { UsuarioProvider } from "./UsuarioContext";
+import CadContas from "./pages/CadContas";
 
 
 export default function App() {
-  return(
-    <Router> 
-      <Routes> 
-        <Route path="/" element={<Login />} /> 
-        <Route path="/principal" element={<Principal/>} />
-      </Routes>
-    </Router>
-  );
+	return (
+		<UsuarioProvider>
+			<Router>
+				<Routes>
+					<Route path="/login" element={<Login />} />
+					<Route path="/*" element={<Principal />} />
+				</Routes>
+			</Router>
+		</UsuarioProvider>
+	);
 }
