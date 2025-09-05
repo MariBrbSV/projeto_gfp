@@ -3,6 +3,16 @@
   Gestor Financeiro Pessoal
 </h1>
 
+<p align="center">
+  <a href="https://gfp-flame.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Acessar%20Site-000000?style=for-the-badge&logo=vercel&logoColor=white" />
+  </a>
+  <a href="https://api-gfp.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Acessar%20API-2962FF?style=for-the-badge&logo=node.js&logoColor=white" />
+  </a>
+</p>
+
+
 
 
 
