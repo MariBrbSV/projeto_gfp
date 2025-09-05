@@ -88,10 +88,14 @@ export default function Contas() {
 
     return (
         <div>
-            <p className='text-3xl font-bold mb-6' >Contas</p>
+            <div className='flex gap-3'>
+                <img src='https://thelukewest.wordpress.com/wp-content/uploads/2016/11/coin-shine1.gif' className='h-10 w-10' />
+                <p className='text-3xl font-bold mb-6' >Contas</p>
+            </div>
+            
             <section className='bg-white p-4 rounded-lg shadow-md'>
-                <div className='flex justify-between items-center mb-4'>
-                    <h3 className='text-xl font-bold text-gray-800'>Gerenciar Contas</h3>
+                <div className='flex justify-between items-center mb-4'> 
+                    <h3 className='text-xl font-bold text-gray-800'> Gerenciar Contas</h3>
                     <button onClick={() => navigate('/cadcontas')} className={Estilos.botaoCadastro}>
                         <MdAdd className='h-8 w-8' /> Nova Conta
                     </button>

@@ -10,6 +10,8 @@ import {
 } from 'react-icons/md';
 import Contas from './Contas';
 import CadContas from './CadContas';
+import Categorias from './Categorias';
+import CadCategorias from './CadCategorias';
 
 export default function Principal() {
     const { dadosUsuario, setDadosUsuario, carregando } = useContext(UsuarioContext);
@@ -151,6 +153,8 @@ export default function Principal() {
                         <Route path='/dashboard' element={<Dashboard />} />
                         <Route path='/contas' element={<Contas />} />
                         <Route path='/cadcontas' element={<CadContas />} />
+                        <Route path='/categorias' element={<Categorias />} />
+                        <Route path='/cadcategorias' element={<CadCategorias />} />
 
                     </Routes>
                 </main>
